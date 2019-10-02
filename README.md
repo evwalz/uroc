@@ -1,0 +1,45 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+uroc
+====
+
+<!-- badges: start -->
+<!-- badges: end -->
+The uroc package provides the functionality of creating a ROC movie (ROCM), a universal ROC (uROC) curve and to compute the coefficient of predictive ability (CPA). These tools generalize the classical ROC curve and AUC and can be applied to assess the predictive abilities of features, markers and tests for not only binary classification problems but for just any ordinal or real-valued outcome.
+
+Installation
+------------
+
+You can install the released version of uroc from [CRAN](https://CRAN.R-project.org) with:
+
+``` r
+install.packages("uroc")
+```
+
+Example
+-------
+
+The following basic example shows how to create a uROC curve:
+
+``` r
+library(uroc)
+
+# Use build-in data set in R: Longley's Economic Regression Data 
+data(longley)
+
+# define response and predictor variable: Use gross national product (GNP) as feaure marker to predict the number of employed people (Employed)
+response <- longley$Employed
+predictor <- longley$GNP
+
+# compute coefficient of predictive ability
+cpa(response, predictor)
+#> [1] 0.9926471
+
+# create uROC curve
+uroc(response, predictor)
+```
+
+<img src="man/figures/README-example-1.png" width="100%" />
+
+References/Contact
+------------------
