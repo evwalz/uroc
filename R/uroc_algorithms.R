@@ -15,8 +15,7 @@ Exact = function(response, predictor){
   predictor <- predictor[pre.order]
   response <- response[pre.order]
   dups <- rev(duplicated(rev(predictor)))
-
-
+  
   response.binary = lapply(thresholds, function(x, response){as.numeric(response>=x)}, response)
   Hitrate.all = lapply(response.binary, function(x, dups){c(0,(cumsum(x==1)*sum(x==0))[!dups])}, dups)
   Farate.all = lapply(response.binary, function(x, dups){c(0,(cumsum(x==0)/sum(x==0))[!dups])}, dups)
@@ -27,6 +26,7 @@ Exact = function(response, predictor){
   final.hit.max.new = rep(0,length(farate.unique))
   hit.min.new = rep(0,length(farate.unique))
   hit.max.new = rep(0,length(farate.unique))
+  
   for(i in 1:(N-1)){
     hitrate = Hitrate.all[[i]]
     farate = Farate.all[[i]]
@@ -77,8 +77,8 @@ Exact = function(response, predictor){
   return(list(Farate = sort(c(farate.unique,farate.unique)), Hitrate = sort(c(final.hit.min.new/weights,final.hit.max.new/weights))))
 }
 
-# This function computes an approximation of the uROC curve and takes into account ties in the predictor
 
+# This function computes an approximation of the uROC curve and takes into account ties in the predictor
 
 Approx1 = function(response, predictor,space.size){
 
@@ -100,8 +100,6 @@ Approx1 = function(response, predictor,space.size){
 
   InterPoint = seq(0,1,1/space.size)
   Hit.weighted = rep(0,length(InterPoint))
-
-
 
   for(i in 1:(N-1)){
     controls = ncontrols[i]
@@ -147,7 +145,6 @@ Approx1 = function(response, predictor,space.size){
 
 # This function computes an approximation of the uROC curve by ignoring ties in the predictor
 
-
 Approx2 = function(response, predictor, space.size){
 
   n = length(response)
@@ -166,7 +163,7 @@ Approx2 = function(response, predictor, space.size){
     space.size = 500
   }
 
-  InterPoint = seq(0,1,1/500)
+  InterPoint = seq(0,1,1/space.size)
   Hit.weighted = rep(0,length(InterPoint))
 
   for(i in 1:(N-1)){
