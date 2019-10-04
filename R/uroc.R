@@ -68,7 +68,7 @@ uroc <- function(response,
   if (is.null(algo)) {
       if (n <= 500) {
       algo <- "exact"
-      else {
+    }  else {
       algo <- "approx"
     }
   }
