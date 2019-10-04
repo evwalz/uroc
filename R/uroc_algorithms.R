@@ -55,7 +55,7 @@ Exact <- function(response, predictor) {
 
 # This function computes an approximation of the uROC curve and takes into account ties in the predictor
 
-Approx1 = function(response, predictor, space.size) {
+Approx <- function(response, predictor, space.size) {
 
   n <- length(response)
   N <- length(unique(response))
@@ -89,41 +89,4 @@ Approx1 = function(response, predictor, space.size) {
   return(list(Farate = c(0, InterPoint), Hitrate = sort(c(0, Hit.weighted / weights))))
 }
 
-
-# This function computes an approximation of the uROC curve by ignoring ties in the predictor
-
-Approx2 <- function(response, predictor, space.size) {
-
-  n = length(response)
-  N = length(unique(response))
-
-  ncontrols <- (which(duplicated(response) == FALSE) - 1)[-1]
-  ncases <- (n - ncontrols)
-  weights_all <- (ncases * ncontrols)
-  weights = sum(weights_all)
-
-  pre.order <- order(predictor, decreasing=TRUE)
-  predictor <- predictor[pre.order]
-  dups <- rev(duplicated(rev(predictor)))
-
-  if(is.null(space.size)){
-    space.size <- 500
-  }
-
-  InterPoint <- seq(0, 1, (1 / space.size))
-  Hit.weighted <- rep(0, length(InterPoint))
-
-  for (i in 1:(N-1)) {
-    controls <- ncontrols[i]
-    cases <- ncases[i]
-    resBin <- c(rep(0, controls), rep(1, cases))[pre.order]
-    hitrate <- c(0, cumsum(resBin == 1)[!dups] * controls)
-    farate <- c(0, cumsum(resBin == 0)[!dups] / controls)
-
-    roc_curve <- stepfun(x = farate[-1], y = hitrate)  
-    Hit.weighted <- Hit.weighted + roc_curve(InterPoint)
-  }
-
-  return(list(Farate = c(0, InterPoint), Hitrate = sort(c(0, Hit.weighted / weights))))
-}
 
