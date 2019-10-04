@@ -108,36 +108,8 @@ Approx1 = function(response, predictor,space.size){
     hitrate = c(0,cumsum(response.binary==1)[!dups]*controls)
     farate = c(0,cumsum(response.binary==0)[!dups]/controls)
 
-    far.group.min = !duplicated(farate)
-    far.group.max = !duplicated(farate, fromLast = TRUE)
-    far.max = farate[far.group.max]
-
-    hit.min = hitrate[far.group.min]
-    hit.max = hitrate[far.group.max]
-
-    # identify ties
-    indx.ties = which(hit.min[-1] != hit.max[-length(hit.max)])
-
-    if(length(indx.ties)>0){
-      start.f = far.max[indx.ties]
-      end.f = far.max[indx.ties+1]
-
-      start.h = hit.max[indx.ties]
-      end.h = hit.max[indx.ties+1]
-
-      slope = (end.h-start.h)/(end.f-start.f)
-
-      for(j in 1:length(start.f)){
-        indx = which(InterPoint>start.f[j] & InterPoint<end.f[j])
-        far.max = c(far.max, InterPoint[indx])
-        hit.new = slope[j]*(InterPoint[indx]-start.f[j])+start.h[j]
-        hit.max = c(hit.max,hit.new)
-      }
-      far.max = sort(far.max)
-      hit.max = sort(hit.max)
-    }
-    intervals.max = cut(InterPoint, breaks=c(far.max,Inf), labels=FALSE,right=FALSE)
-    Hit.weighted <- Hit.weighted + hit.max[intervals.max]
+    roc_curve <- approxfun(farate, hitrate, method = "linear", ties = "ordered")
+    Hit.weighted <- roc_curve(InterPoint) + Hit.weighted
   }
   return(list(Farate = c(0,InterPoint), Hitrate = sort(c(0,Hit.weighted/weights))))
 }
