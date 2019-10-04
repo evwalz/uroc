@@ -166,22 +166,17 @@ Approx2 = function(response, predictor, space.size){
   InterPoint = seq(0,1,1/space.size)
   Hit.weighted = rep(0,length(InterPoint))
 
-  for(i in 1:(N-1)){
+  for (i in 1:(N-1)) {
     controls = ncontrols[i]
     cases = ncases[i]
     resBin = c(rep(0,controls),rep(1,cases))[pre.order]
     hitrate = c(0,cumsum(resBin==1)[!dups]*controls)
     farate = c(0,cumsum(resBin==0)[!dups]/controls)
 
-    far.group <- !duplicated(farate, fromLast = TRUE)
-    farate.unique = farate[far.group]
-
-    hit.max = hitrate[far.group]
-
-    intervals.max = cut(InterPoint, breaks=c(farate.unique,Inf), labels=FALSE,right=FALSE)
-    Hit.weighted <- Hit.weighted + hit.max[intervals.max]
+    roc_curve = stepfun(x = farate[-1], y = hitrate)  
+    Hit.weighted <- Hit.weighted + roc_curve(InterPoint)
   }
 
-  return(list(Farate = c(0,InterPoint),Hitrate = sort(c(0,Hit.weighted/weights))))
+  return(list(Farate = c(0, InterPoint), Hitrate = sort(c(0, Hit.weighted / weights))))
 }
 
