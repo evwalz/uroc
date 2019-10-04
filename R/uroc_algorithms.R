@@ -32,43 +32,18 @@ Exact = function(response, predictor){
     farate = Farate.all[[i]]
 
     far.group.min <- which(as.numeric(duplicated(farate))==0)
-    far.group.max = !duplicated(farate, fromLast = TRUE)
 
     #only select far-values with steps in graph and corresponding min and max value of hitrate
-    far.max = farate[far.group.min]
+    far.min = farate[far.group.min]
     hit.min = hitrate[far.group.min]
-    hit.max = hitrate[far.group.max]
+    
+    roc_curve_max = approxfun(x = farate, y = hitrate, method="linear", ties="ordered")
+    hit.max.new = roc_curve_max(farate.unique)
 
-    indx.ties = which(hit.min[-1] != hit.max[-length(hit.max)])
-
-    cuts.min = c(-Inf,far.max)
-    cuts.max = c(far.max,Inf)
-
-    intervals.min = cut(farate.unique, breaks=cuts.min, labels=FALSE,right=TRUE)
-    intervals.max = cut(farate.unique, breaks=cuts.max, labels=FALSE,right=FALSE)
-
-    hit.max.new = hit.max[intervals.max]
-    hit.min.new = hit.min[intervals.min]
-
-
-    indx.ties.length = length(indx.ties)
-
-    if(indx.ties.length>0){
-
-      far.min.tied = far.max[indx.ties]
-      far.max.tied = far.max[(indx.ties+1)]
-
-      hit.max.tied = hit.min[(indx.ties+1)]
-      hit.min.tied = hit.max[indx.ties]
-
-      slope = (hit.max.tied -hit.min.tied)/(far.max.tied - far.min.tied)
-
-      for(j in 1:indx.ties.length){
-        indx = which(farate.unique > far.min.tied[j] & farate.unique < far.max.tied[j])
-        hit.max.new[indx] = hit.min.new[indx] = slope[j]*(farate.unique[indx]-far.min.tied[j])+hit.min.tied[j]
-      }
-    }
-
+    hit.min.new <- hit.max.new
+    indx.min <- match(far.min, farate.unique)
+    hit.min.new[indx.min] <- hit.min
+    
     final.hit.min.new <- final.hit.min.new + hit.min.new
     final.hit.max.new <- final.hit.max.new + hit.max.new
 
