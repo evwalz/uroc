@@ -1,6 +1,6 @@
 #' @title Computes a uROC curve
 #' @description This function builds a uROC curve and returns a "uroc" object, a list of class "uroc".
-#' @details There are 3 different algorithms available to create a uROC curve. The input argument \code{algo="exact"} computes the exact uROC curve. Using \code{algo="approx1"} or \code{algo="approx2"} generates an approximation to the uROC curve by computing the y-values of the curve only on specific x-values. The x-values are equidistant over the interval [0,1] and the number of x-values used in the computation can be set by \code{space.size}. Calling \code{algo="approx1"} generates an approximation with a correction for ties in the predictor vaiable whereas \code{algo="approx2"} ignores ties in the predictor variable but results in a faster computation. Therefore, it is recommended to either use \code{algo="exact"} or \code{algo="approx2"} if the input vector for \code{predictor} contains a lot of tied values. If the type of algorithm is not specified, the \code{\link{uroc}} function choses one of the three versions based on the input arguments in \code{response} and \code{predictor}.
+#' @details There are 2 different algorithms available to create a uROC curve. The input argument \code{algo="exact"} computes the exact uROC curve and \code{algo="approx"} generates an approximation to the uROC curve by computing the y-values of the curve only on specific x-values. The x-values are equidistant points over the interval [0,1] and the number of x-values can be set by \code{space.size}. If the type of algorithm is not specified, the \code{\link{uroc}} function choses one of the two versions based on the input arguments in \code{response} and \code{predictor}. 
 #' @param response a numeric vector of real valued responses
 #' @param predictor a numeric vector of the same length than \code{response}, containing real valued predictions for each observation
 #' @param object if TRUE an object of type uroc is returned containg the false alarm rate and the hitrate of the uROC curve
@@ -54,7 +54,7 @@ uroc <- function(response,
     stop("response and predictor should have the same length")
   }
 
-  if (!is.null(algo) && algo != "exact" && algo != "approx1" && algo != "approx2") {
+  if (!is.null(algo) && algo != "exact" && algo != "approx") {
       stop("invalid argument for algo")
   }
 
@@ -66,26 +66,18 @@ uroc <- function(response,
 
 
   if (is.null(algo)) {
-      if (N <= 400) {
+      if (n <= 500) {
       algo <- "exact"
-    } else if (n<=1000) {
-      algo <- "approx1"
-    } else if (n <= 10000 & N <= 50) {
-      algo <- "approx1"
-    } else if (max(rle(duplicated(sort(predictor)))$length)<200) {
-      algo <- "approx1"
-    } else {
-      algo <- "approx2"
+      else {
+      algo <- "approx"
     }
   }
 
   if (algo == "exact") {
     uROC <- Exact(response, predictor)
-  }  else if (algo == "approx1") {
-    uROC <- Approx1(response, predictor, space.size)
-  } else if (algo == "approx2") {
-    uROC <- Approx2(response, predictor, space.size)
-  }
+  }  else if (algo == "approx") {
+    uROC <- Approx(response, predictor, space.size)
+ }
 
   Farate <- uROC$Farate
   Hitrate <- uROC$Hitrate
