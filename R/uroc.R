@@ -9,7 +9,7 @@
 #' @param space.size optional argument to set the number of x-values for which the corresponding value in the approximation algorithm for the uROC curve is computed. It is the inverse value of the distance between equidistant points within the interval [0,1]
 #'
 #' @importFrom graphics text lines
-#' @importFrom stats approxfun stepfun
+#' @importFrom stats approxfun 
 #'
 #' @return If \code{object = TRUE} this function returns a list of class "uroc".
 #' @export
