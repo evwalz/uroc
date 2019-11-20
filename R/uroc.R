@@ -24,7 +24,7 @@ uroc <- function(response,
                  predictor,
                  object = FALSE,
                  plot = TRUE,
-                 algo = NULL,
+                 split = NULL,
                  space.size = NULL) {
 
   if (!is.vector(predictor) || !is.vector(response)) {
@@ -59,28 +59,17 @@ uroc <- function(response,
   }
 
 
-  cpa_exact <- cpa(response, predictor)
+  #cpa_exact <- cpa(response, predictor)
   response_order <- order(response, decreasing=FALSE)
   response <- response[response_order]
   predictor <- predictor[response_order]
+  
+  
+  uroc_object <- compute_uroc(response, predictor,n,N)
 
 
-  if (is.null(algo)) {
-      if (n <= 500) {
-      algo <- "exact"
-    }  else {
-      algo <- "approx"
-    }
-  }
-
-  if (algo == "exact") {
-    uROC <- Exact(response, predictor)
-  }  else if (algo == "approx") {
-    uROC <- Approx(response, predictor, space.size)
- }
-
-  Farate <- uROC$Farate
-  Hitrate <- uROC$Hitrate
+  Farate <- uroc_object$Farate
+  Hitrate <- uroc_objectHitrate
 
   cpa_approx <- Trap(Farate, Hitrate)
 
@@ -91,7 +80,7 @@ uroc <- function(response,
   #plot
   if (plot) {
     cpa_value <- round(cpa_approx, 2)
-    plot(x = Farate, y = Hitrate, type = "l", xlab = "False alarm rate", ylab = "Hitrate")
+    plot(x = Farate, y = Hitrate, type = "l", xlab = "1-Specificity", ylab = "Sensitivity")
     lines(x = c(0, 1), y = c(0, 1), lty = 2)
     text(x = 0.6, y = 0.4, labels = paste("CPA:",cpa_value))
   }

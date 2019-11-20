@@ -55,38 +55,62 @@ Exact <- function(response, predictor) {
 
 # This function computes an approximation of the uROC curve and takes into account ties in the predictor
 
-Approx <- function(response, predictor, space.size) {
-
-  n <- length(response)
-  N <- length(unique(response))
-
+Approx <- function(response, predictor, n, N, split, space_size) {
+  
+  # compute controls and weights for the N/split transformed problems 
   ncontrols <- (which(duplicated(response) == FALSE) - 1)[-1]
-  ncases <- (n-ncontrols)
-  weights_all <- (ncases*ncontrols)
-  weights <- sum(weights_all)
+  ncontrols_split <- ncontrols[seq(1, length(ncontrols), split)]
+  group_length <- c(ncontrols_split) - c(0, ncontrols_split[-length(ncontrols_split)])
+  groups <- rep(seq(1, length(group_length),1), group_length)
+  
+  weights <- sum(ncontrols_split * (n - ncontrols_split))
+  
+  # indices to define which transformed problems are used in the computation of uroc
+  indx_transformation <- seq(1, (N-1), split)
+  
+  Ranking_predictor_1 <- rank(predictor, ties.method = "first")
+  Classes_predictor <- cumsum(duplicated(sort(predictor))==FALSE)[Ranking_predictor_1]
+  
+  Split_classes_predictor <- split(Classes_predictor[1:length(groups)], groups)
+  Split_classes_predictor_ordered <- lapply(Split_classes_predictor, function(x){c(0, sort(x))})
+  rm(Split_classes_predictor)
+  Split_classes_predictor_ordered_diff <- lapply(Split_classes_predictor_ordered, function(x){x[-1] - x[-length(x)]})
+  rm(Split_classes_predictor_ordered)
+  
+  
+  # compute firs roc curve  
+  order_predictor <- order(predictor, decreasing = TRUE)
+  first_threshold <- min(response)
+  response_binary <- response[order_predictor] > first_threshold
 
-  pre.order <- order(predictor, decreasing = TRUE)
-  predictor <- predictor[pre.order]
-  dups <- rev(duplicated(rev(predictor)))
+  dups <- rev(duplicated(rev(predictor[order_predictor])))
+  tp <- c(0, cumsum(response_binary == 1)[!dups])
+  fp <- c(0, cumsum(response_binary == 0)[!dups])
+  truepositive <- rev(tp)
+  falsepositive <- rev(fp)
+  first_roc_curve <- approxfun(x = fp/ncontrols[1], y = tp, method = "linear", ties = "ordered")
+  
+  sum_tp_fp <- falsepositive + truepositive   
+  InterPoint <- seq(0, 1, (1 / space_size))
+  Hit_weighted <- first_roc_curve(InterPoint) * ncontrols_split[1]
 
-  if (is.null(space.size)) {
-    space.size <- 100
+  for (i in 1:length(indx_transformation)) {
+    m <- length(Split_classes_predictor_ordered_diff[[i]])
+    
+    sum_indicator <- rep(seq(m,1,-1), Split_classes_predictor_ordered_diff[[i]])
+    
+    sequence_to_change <- length(sum_indicator)
+    
+    truepositive[1:sequence_to_change] <- truepositive[1:sequence_to_change] - sum_indicator
+    
+    farate <- (sum_tp_fp - truepositive) / ncontrols_split[i]
+    
+    roc_curve <- approxfun(x = rev(farate), y = rev(truepositive) * ncontrols_split[i], method = "linear", ties = "ordered")
+    
+    Hit_weighted <- sort(roc_curve(InterPoint)) + Hit.weighted
+
   }
-
-  InterPoint <- seq(0, 1, (1 / space.size))
-  Hit.weighted <- rep(0, length(InterPoint))
-
-  for (i in 1:(N-1)) {
-    controls <- ncontrols[i]
-    cases <- ncases[i]
-    response.binary <- c(rep(0, controls), rep(1, cases))[pre.order]
-    hitrate <- c(0, cumsum(response.binary == 1)[!dups] * controls)
-    farate <- c(0, cumsum(response.binary == 0)[!dups] / controls)
-
-    roc_curve <- approxfun(x = farate, y = hitrate, method = "linear", ties = "ordered")
-    Hit.weighted <- roc_curve(InterPoint) + Hit.weighted
-  }
-  return(list(Farate = c(0, InterPoint), Hitrate = sort(c(0, Hit.weighted / weights))))
+  return(list(Farate = c(0, InterPoint), Hitrate = sort(c(0, Hit_weighted / weights))))
 }
 
 
