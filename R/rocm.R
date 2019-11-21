@@ -5,6 +5,8 @@
 #' @param predictor a numeric vector of the same length than \code{response}, containing real valued predictions for each observation
 #' @param path folder path
 #' @param output name of GIF animation
+#' @param b default is \code{b=100}
+#' @param a default is \code{a=400}
 #' @param clean if FALSE png files are not deleted
 #' @param convert convert command for the function  \link[animation]{im.convert}
 #' @param cmd.fun a function to invoke OS command in  \link[animation]{im.convert}
@@ -29,6 +31,8 @@ rocm <-  function(response,
                   predictor,
                   path,
                   output = "animation.gif",
+                  b = 100,
+                  a = 400,
                   clean = TRUE,
                   convert = "convert",
                   cmd.fun = if (.Platform$OS.type == "windows") shell else system,
@@ -77,8 +81,6 @@ rocm <-  function(response,
 
   # find set C of ROC curves
   class_length <- Encoding$lengths[-1]
-  a <- 400
-  b <- 100
   s <- ceiling(N/a)
   indx_setCa <- seq(1,N,s)
   indx_setCb <- which(class_length>n/b)

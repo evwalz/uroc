@@ -1,12 +1,12 @@
 #' @title Computes a uROC curve
 #' @description This function builds a uROC curve and returns a "uroc" object, a list of class "uroc".
-#' @details There are 2 different algorithms available to create a uROC curve. The input argument \code{algo="exact"} computes the exact uROC curve and \code{algo="approx"} generates an approximation to the uROC curve by computing the y-values of the curve only on specific x-values. The x-values are equidistant points over the interval [0,1] and the number of x-values can be set by \code{space.size}. If the type of algorithm is not specified, the \code{\link{uroc}} function choses one of the two versions based on the input arguments in \code{response} and \code{predictor}.
+#' @details There are 2 different algorithms available to create a uROC curve. The default option is  \code{algo="approx"} which generates an approximation to the UROC curve by using linear interpolation of each ROC curve on a set of 1000 äquidistant points in the unit interval. To reduce computation time the paramter \code{split} can be specified. The input argument \code{algo="exact"} computes the exact uROC curve and should only be used on small data.
 #' @param response a numeric vector of real valued responses
 #' @param predictor a numeric vector of the same length than \code{response}, containing real valued predictions for each observation
-#' @param object if TRUE an object of type uroc is returned containg the false alarm rate and the hitrate of the uROC curve
+#' @param object if TRUE an object of type uroc is returned containg the false alarm rate and the hitrate of the UROC curve
 #' @param plot plot the uROC curve? if \code{FALSE} the curve is not displayed
-#' @param algo optional argument to select an algorithm for the computation of the uROC curve. See Details.
-#' @param space.size optional argument to set the number of x-values for which the corresponding value in the approximation algorithm for the uROC curve is computed. It is the inverse value of the distance between equidistant points within the interval [0,1]
+#' @param algo optional argument to select an algorithm for the computation of the UROC curve. See Details.
+#' @param split a integer value with a default of \code{split = 1}. Computes uroc curve by considering only a subset of all N-1 available ROC curves to reduce computation time. The split parameter defines the distance between a set of equidistant indices which are then used to select particular ROC curves among the N-1.
 #'
 #' @importFrom graphics text lines
 #' @importFrom stats approxfun
