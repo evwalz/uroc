@@ -128,9 +128,9 @@ rocm <-  function(response,
     truepositive[1:sequence_to_change] <- truepositive[1:sequence_to_change] - sum_indicator
     farate <- (sum_tp_fp - truepositive) / ncontrols_split[i]
     
-    roc_curve <- approxfun(x = rev(farate), y = rev(truepositive) * ncontrols_split[i], method = "linear", ties = "ordered")
-    hitrate <- roc_curve(InterPoint)
-    
+    roc_approx <- approx(x = rev(farate), y = rev(truepositive) * ncontrols_split[i], xout = InterPoint, method = "linear", ties = "ordered")
+    hitrate <- roc_approx$y 
+      
     auc <- round(Trapezoidal(InterPoint, hitrate),2)
 
     w = round(weights_scaled[i],2)
