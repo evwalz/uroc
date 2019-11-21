@@ -24,9 +24,7 @@ uroc <- function(response,
                  predictor,
                  object = FALSE,
                  plot = TRUE,
-                 split = NULL,
-                 space.size = NULL,
-                 algo = NULL) {
+                 algo = "approx") {
 
   if (!is.vector(predictor) || !is.vector(response)) {
     stop("Input must be a vector")

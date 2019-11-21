@@ -37,8 +37,8 @@ Exact <- function(response, predictor) {
     far.min <- farate[far.group.min]
     hit.min <- hitrate[far.group.min]
     
-    roc_curve_max <- approxfun(x = farate, y = hitrate, method = "linear", ties = "ordered")
-    hit.max.new <- roc_curve_max(farate.unique)
+    roc_curve_max <- approx(x = farate, y = hitrate, xout = farate.unique, method = "linear", ties = "ordered")
+    hit.max.new <- roc_curve_max$y
 
     hit.min.new <- hit.max.new
     indx.min <- match(far.min, farate.unique)
@@ -78,7 +78,7 @@ Approx <- function(response, predictor, n, N, split, space_size) {
   rm(Split_classes_predictor_ordered)
   
   
-  # compute firs roc curve  
+  # compute first roc curve  
   order_predictor <- order(predictor, decreasing = TRUE)
   first_threshold <- min(response)
   response_binary <- response[order_predictor] > first_threshold
@@ -97,18 +97,12 @@ Approx <- function(response, predictor, n, N, split, space_size) {
   for (i in 1:length(indx_transformation)) {
     
     m <- length(Split_classes_predictor_ordered_diff[[i]])
-    
     sum_indicator <- rep(seq(m,1,-1), Split_classes_predictor_ordered_diff[[i]])
-    
     sequence_to_change <- length(sum_indicator)
-    
     truepositive[1:sequence_to_change] <- truepositive[1:sequence_to_change] - sum_indicator
-    
     farate <- (sum_tp_fp - truepositive) / ncontrols_split[i]
-    
-    roc_curve <- approxfun(x = rev(farate), y = rev(truepositive) * ncontrols_split[i], method = "linear", ties = "ordered")
-    
-    Hit_weighted <- (roc_curve(InterPoint)) + Hit.weighted
+    roc_approx <- approx(x = rev(farate), y = rev(truepositive) * ncontrols_split[i], xout = InterPoint, method = "linear", ties = "ordered")
+    Hit_weighted <- roc_approx$y + Hit.weighted
 
   }
   return(list(Farate = c(0, InterPoint), Hitrate = c(0, Hit_weighted / weights)))
