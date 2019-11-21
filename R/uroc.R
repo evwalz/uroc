@@ -25,7 +25,8 @@ uroc <- function(response,
                  object = FALSE,
                  plot = TRUE,
                  split = NULL,
-                 space.size = NULL) {
+                 space.size = NULL,
+                 algo = NULL) {
 
   if (!is.vector(predictor) || !is.vector(response)) {
     stop("Input must be a vector")
@@ -59,23 +60,22 @@ uroc <- function(response,
   }
 
 
-  #cpa_exact <- cpa(response, predictor)
   response_order <- order(response, decreasing=FALSE)
   response <- response[response_order]
   predictor <- predictor[response_order]
   
   
-  uroc_object <- compute_uroc(response, predictor,n,N)
-
+  if(algo=='exact'){
+    uroc_object <- compute_uroc_exact(response, predictor,n,N) 
+  } else {
+    uroc_object <- compute_uroc_approx(response, predictor,n,N)  
+  }
+  
 
   Farate <- uroc_object$Farate
   Hitrate <- uroc_objectHitrate
 
-  cpa_approx <- Trap(Farate, Hitrate)
-
-  if (abs(cpa_approx-cpa_exact) > 0.05) {
-    warning("poor approximation of uROC curve")
-  }
+  cpa_approx <- Trapezoidal(Farate, Hitrate)
 
   #plot
   if (plot) {

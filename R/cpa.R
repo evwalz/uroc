@@ -3,7 +3,7 @@
 #' @aliases cpa.default cpa.uroc
 #' @param response a numeric vector of real valued responses
 #' @param predictor a numeric vector of the same length as \code{response}, containing real valued predictions for each observation
-#' @param uroc an object of class "uroc" contaning the values of the false alarm rate and the hitrate of the uROC curve
+#' @param uroc an object of class "uroc" contaning the values of the false alarm rate (1-specificity) and the hitrate (sensitivity) of the UROC curve
 #' @param ... ignored
 #' @details This function is called from \code{\link{rocm}} and \code{\link{uroc}}.
 #'
@@ -76,7 +76,7 @@ cpa.uroc <- function(uroc, ...) {
 
   Farate <- uroc$Farate
   Hitrate <- uroc$Hitrate
-  cpa <- Trap(Farate, Hitrate)
+  cpa <- Trapezoidal(Farate, Hitrate)
 
   return(cpa)
 }

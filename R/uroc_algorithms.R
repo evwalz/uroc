@@ -95,6 +95,7 @@ Approx <- function(response, predictor, n, N, split, space_size) {
   Hit_weighted <- first_roc_curve(InterPoint) * ncontrols_split[1]
 
   for (i in 1:length(indx_transformation)) {
+    
     m <- length(Split_classes_predictor_ordered_diff[[i]])
     
     sum_indicator <- rep(seq(m,1,-1), Split_classes_predictor_ordered_diff[[i]])
@@ -107,10 +108,10 @@ Approx <- function(response, predictor, n, N, split, space_size) {
     
     roc_curve <- approxfun(x = rev(farate), y = rev(truepositive) * ncontrols_split[i], method = "linear", ties = "ordered")
     
-    Hit_weighted <- sort(roc_curve(InterPoint)) + Hit.weighted
+    Hit_weighted <- (roc_curve(InterPoint)) + Hit.weighted
 
   }
-  return(list(Farate = c(0, InterPoint), Hitrate = sort(c(0, Hit_weighted / weights))))
+  return(list(Farate = c(0, InterPoint), Hitrate = c(0, Hit_weighted / weights)))
 }
 
 
