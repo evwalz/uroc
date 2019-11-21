@@ -14,5 +14,5 @@ Trapezoidal <- function(farate, hitrate) {
 # create names for png file based on iteraton index
 
 rename_figure <- function(indx) {
-    return(name <- paste('animation_', indx, '.png', sep = ''))
+  return(name <- paste('animation_', indx, '.png', sep = ''))
 }

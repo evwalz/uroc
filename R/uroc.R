@@ -1,6 +1,6 @@
 #' @title Computes a uROC curve
 #' @description This function builds a uROC curve and returns a "uroc" object, a list of class "uroc".
-#' @details There are 2 different algorithms available to create a uROC curve. The input argument \code{algo="exact"} computes the exact uROC curve and \code{algo="approx"} generates an approximation to the uROC curve by computing the y-values of the curve only on specific x-values. The x-values are equidistant points over the interval [0,1] and the number of x-values can be set by \code{space.size}. If the type of algorithm is not specified, the \code{\link{uroc}} function choses one of the two versions based on the input arguments in \code{response} and \code{predictor}. 
+#' @details There are 2 different algorithms available to create a uROC curve. The input argument \code{algo="exact"} computes the exact uROC curve and \code{algo="approx"} generates an approximation to the uROC curve by computing the y-values of the curve only on specific x-values. The x-values are equidistant points over the interval [0,1] and the number of x-values can be set by \code{space.size}. If the type of algorithm is not specified, the \code{\link{uroc}} function choses one of the two versions based on the input arguments in \code{response} and \code{predictor}.
 #' @param response a numeric vector of real valued responses
 #' @param predictor a numeric vector of the same length than \code{response}, containing real valued predictions for each observation
 #' @param object if TRUE an object of type uroc is returned containg the false alarm rate and the hitrate of the uROC curve
@@ -9,7 +9,7 @@
 #' @param space.size optional argument to set the number of x-values for which the corresponding value in the approximation algorithm for the uROC curve is computed. It is the inverse value of the distance between equidistant points within the interval [0,1]
 #'
 #' @importFrom graphics text lines
-#' @importFrom stats approxfun 
+#' @importFrom stats approxfun
 #'
 #' @return If \code{object = TRUE} this function returns a list of class "uroc".
 #' @export
@@ -24,7 +24,8 @@ uroc <- function(response,
                  predictor,
                  object = FALSE,
                  plot = TRUE,
-                 algo = "approx") {
+                 algo = "approx",
+                 split = 1) {
 
   if (!is.vector(predictor) || !is.vector(response)) {
     stop("Input must be a vector")
@@ -61,17 +62,17 @@ uroc <- function(response,
   response_order <- order(response, decreasing=FALSE)
   response <- response[response_order]
   predictor <- predictor[response_order]
-  
-  
+
+
   if(algo=='exact'){
-    uroc_object <- compute_uroc_exact(response, predictor,n,N) 
+    uroc_object <- compute_uroc_exact(response, predictor,n,N)
   } else {
-    uroc_object <- compute_uroc_approx(response, predictor,n,N)  
+    uroc_object <- compute_uroc_approx(response, predictor,n,N, split)
   }
-  
+
 
   Farate <- uroc_object$Farate
-  Hitrate <- uroc_objectHitrate
+  Hitrate <- uroc_object$Hitrate
 
   cpa_approx <- Trapezoidal(Farate, Hitrate)
 
