@@ -5,7 +5,7 @@
 #' @param predictor a numeric vector of the same length as \code{response}, containing real valued predictions for each observation
 #' @param uroc an object of class "uroc" contaning the values of the false alarm rate (1-specificity) and the hitrate (sensitivity) of the UROC curve
 #' @param ... ignored
-#' @details This function is called from \code{\link{rocm}} and \code{\link{uroc}}.
+#' @details The CPA is an asymmetric measure that is linearly related to the correlation between the classes of the response variable and the ranks of the predictor
 #'
 #' @importFrom stats cov
 #'

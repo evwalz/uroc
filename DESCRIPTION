@@ -4,7 +4,7 @@ Title: Computes ROCM, UROC and CPA
 Version: 0.1.0
 Author: Eva-Maria Walz
 Maintainer: Eva-Maria Walz <evamaria.walz@gmx.de>
-Description: The uroc package provides the functionality of creating a sequence of ROC curves for the ROC movie (ROCM), a universal ROC (UROC) curve and to compute the coefficient of predictive ability (CPA). These tools generalize the classical ROC curve and AUC and can be applied to assess the predictive abilities of features, markers and tests for not only binary classification problems but for just any ordinal or real-valued outcome.  
+Description: The uroc package provides the functionality of creating a ROC movie (ROCM), a universal ROC (UROC) curve and to compute the coefficient of predictive ability (CPA). These tools generalize the classical ROC curve and AUC and can be applied to assess the predictive abilities of features, markers and tests for not only binary classification problems but for just any ordinal or real-valued outcome.  
 SystemRequirements: ImageMagick (https://imagemagick.org/)
 License: GPL-3
 Encoding: UTF-8

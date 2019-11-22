@@ -28,7 +28,7 @@ The numeric CPA value
 This function computes the coefficient of predictive ability which is equalivalent to the area under the UROC curve. Two syntaxes are possible: one object of class "uroc" or two vectors, the response and the predictor.
 }
 \details{
-This function is called from \code{\link{rocm}} and \code{\link{uroc}}.
+The CPA is an asymmetric measure that is linearly related to the correlation between the classes of the response variable and the ranks of the predictor
 }
 \examples{
 

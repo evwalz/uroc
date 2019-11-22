@@ -86,12 +86,13 @@ compute_uroc_approx <- function(response, predictor, n, N, split) {
   fp <- c(0, cumsum(response_binary == 0)[!dups])
   truepositive <- rev(tp)
   falsepositive <- rev(fp)
-  first_roc_curve <- approxfun(x = fp/ncontrols[1], y = tp, method = "linear", ties = "ordered")
 
   space_size <- 1000
   sum_tp_fp <- falsepositive + truepositive
   InterPoint <- seq(0, 1, (1 / space_size))
-  Hit_weighted <- first_roc_curve(InterPoint) * ncontrols_split[1]
+
+  first_roc_curve <- approx(x = fp/ncontrols[1], y = tp, xout = InterPoint, method = "linear", ties = "ordered")
+  Hit_weighted <- first_roc_curve$y * ncontrols_split[1]
 
   for (i in 2:length(indx_transformation)) {
 
@@ -106,5 +107,9 @@ compute_uroc_approx <- function(response, predictor, n, N, split) {
   }
   return(list(Farate = c(0, InterPoint), Hitrate = c(0, Hit_weighted / weights)))
 }
+
+
+
+
 
 

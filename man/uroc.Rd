@@ -2,7 +2,7 @@
 % Please edit documentation in R/uroc.R
 \name{uroc}
 \alias{uroc}
-\title{Computes a uROC curve}
+\title{Computes a UROC curve}
 \usage{
 uroc(response, predictor, object = FALSE, plot = TRUE,
   algo = "approx", split = 1)
@@ -14,7 +14,7 @@ uroc(response, predictor, object = FALSE, plot = TRUE,
 
 \item{object}{if TRUE an object of type uroc is returned containg the false alarm rate and the hitrate of the UROC curve}
 
-\item{plot}{plot the uROC curve? if \code{FALSE} the curve is not displayed}
+\item{plot}{plot the UROC curve? if \code{FALSE} the curve is not displayed}
 
 \item{algo}{optional argument to select an algorithm for the computation of the UROC curve. See Details.}
 
@@ -24,10 +24,10 @@ uroc(response, predictor, object = FALSE, plot = TRUE,
 If \code{object = TRUE} this function returns a list of class "uroc".
 }
 \description{
-This function builds a uROC curve and returns a "uroc" object, a list of class "uroc".
+This function builds a UROC curve and returns a "uroc" object, a list of class "uroc".
 }
 \details{
-There are 2 different algorithms available to create a uROC curve. The default option is  \code{algo="approx"} which generates an approximation to the UROC curve by using linear interpolation of each ROC curve on a set of 1000 äquidistant points in the unit interval. To reduce computation time the paramter \code{split} can be specified. The input argument \code{algo="exact"} computes the exact uROC curve and should only be used on small data.
+There are 2 different algorithms available to create a uROC curve. The default option is  \code{algo="approx"} which generates an approximation to the UROC curve by using linear interpolation of each ROC curve. To reduce computation time the paramter \code{split} can be specified to select a subset of ROC curves in the computation. The input argument \code{algo="exact"} computes the exact UROC curve and should only be used on small data.
 }
 \examples{
 data(longley)

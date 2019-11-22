@@ -1,18 +1,19 @@
-  #' @title Builds the sequence of ROC curves for the ROC movie (ROCM)
-  #' @description This function computes a List of ROC curves.
-  #' @details The ROC movie can be used to visualize the performance of a real valued foreacsting problem. Therefore, a sequence of ROC curves is generated which should than be combined into a GIF animation. Each entry of the list consist of two vectors of length 1000 containing the values of farate (1-Specificity) and hitrate (sensitivity) and three values, namely the associated auc value, the weight and the threshold
+  #' @title Builds the ROC movie (ROCM) an animated sequence of ROC curves.
+  #' @description This function computes the sequence of ROC curves which form the ROC Movie and produces a GIF animated ROCM
+  #' @details The ROC movie can be used to visualize the performance of a real valued foreacsting problem. Therefore, a sequence of ROC curves is generated which can than be combined into a GIF animation. Each entry of the list consist of two vectors of length 1000 containing the values of farate (1-Specificity) and hitrate (sensitivity) and three values, namely the associated auc value, the weight and the threshold
   #' @param response a numeric vector of real valued responses
   #' @param predictor a numeric vector of the same length than \code{response}, containing real valued predictions for each observation
-  #' @param a default is \code{a=400}. Used to select a subset of all ROC curves for the ROC movie with at least \code{a} and at most \code{a+b} ROC curves
-  #' @param b default is \code{b=100} Used to select a subset of all ROC curves for the ROC movie with at least \code{a} and at most \code{a+b} ROC curves
-  #' @param object if TRUE a list of ROC curves is returned. Default option is \code{object = TRUE}
+  #' @param a selects a subset of all ROC curves for the ROC movie with at least \code{a} and at most \code{a+b} ROC curves (default \code{a=400})
+  #' @param b selects a subset of all ROC curves for the ROC movie with at least \code{a} and at most \code{a+b} ROC curves (default \code{b=100})
+  #' @param object if TRUE a list of ROC curves is returned (default \code{object = TRUE})
   #' @param gif if TRUE a gif animation is created
-  #' @param ... parameters to control behavior of gif animation using the external function ani.option. See  \link{animation} for more information
+  #' @param ... parameters to control the behavior of the GIF animation using the external function ani.option from \link{animation}.
   #'
-  #' @importFrom stats approxfun
+  #' @importFrom stats approx
   #' @importFrom animation ani.options saveGIF
+  #' @importFrom graphics plot
   #'
-  #' @return List
+  #' @return if \code{object = TRUE}, this function retunrs a list of ROC curves
   #' @export
   #'
   #' @examples
@@ -45,7 +46,6 @@
     if (anyNA(response) || anyNA(predictor)) {
       stop("missing values in the data")
     }
-
 
     n <- length(response)
 
@@ -142,18 +142,18 @@
     if(gif == TRUE) {
       uroc_object <- uroc(response, predictor, object = TRUE, plot = FALSE)
       auc <- round(Trapezoidal(uroc_object$Farate, uroc_object$Hitrate), 2)
-      rocm_object[["uroc"]] <- list(farate = uroc_object$Farate, hitrate = uroc_object$Hitrate, auc = auc)
+      rocm_list[["uroc"]] <- list(farate = uroc_object$Farate, hitrate = uroc_object$Hitrate, auc = auc)
 
       ani.options(loop = 1, interval = 0.1, ...)
 
       saveGIF({
-        for(i in 1:length(rocm_object)) {
-          plot(rocm_object[[i]]$farate, rocm_object[[i]]$hitrate, type="l", xlab = "1-Specificity", ylab = "Sensitivity")
+        for(i in 1:length(rocm_list)) {
+          plot(rocm_list[[i]]$farate, rocm_list[[i]]$hitrate, type="l", xlab = "1-Specificity", ylab = "Sensitivity")
           lines(x = c(0,1), y = c(0,1))
-          if(i < length(rocm_object)) {text(x=0.75, y=0.2, labels = paste("AUC:", rocm_object[[i]]$auc), adj = 0)
-            text(x = 0.0, y = 0.95, labels = paste("z =", rocm_object[[i]]$threshold), adj = 0)
-            text(x = 0.2, y = 0.95, labels = paste("w =", rocm_object[[i]]$weight), adj = 0)}
-          if(i == length(rocm_object)) {text(x = 0.75, y = 0.2, labels = paste("CPA:", rocm_object[[i]]$auc), adj = 0)
+          if(i < length(rocm_list)) {text(x=0.75, y=0.2, labels = paste("AUC:", rocm_list[[i]]$auc), adj = 0)
+            text(x = 0.0, y = 0.95, labels = paste("z =", rocm_list[[i]]$threshold), adj = 0)
+            text(x = 0.2, y = 0.95, labels = paste("w =", rocm_list[[i]]$weight), adj = 0)}
+          if(i == length(rocm_list)) {text(x = 0.75, y = 0.2, labels = paste("CPA:", rocm_list[[i]]$auc), adj = 0)
             text(x = 0, y = 0.95, labels = "UROC curve", adj = 0)}
        }})
     }
