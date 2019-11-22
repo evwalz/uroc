@@ -2,44 +2,32 @@
 % Please edit documentation in R/rocm.R
 \name{rocm}
 \alias{rocm}
-\title{Builds a ROC movie (ROCM)}
+\title{Builds the sequence of ROC curves for the ROC movie (ROCM)}
 \usage{
-rocm(response, predictor, path, output = "animation.gif", clean = TRUE,
-  convert = "convert", cmd.fun = if (.Platform$OS.type == "windows")
-  shell else system, interval = 0.1, ...)
+rocm(response, predictor, b = 100, a = 400)
 }
 \arguments{
 \item{response}{a numeric vector of real valued responses}
 
 \item{predictor}{a numeric vector of the same length than \code{response}, containing real valued predictions for each observation}
 
-\item{path}{folder path}
+\item{b}{default is \code{b=100} Used to select a subset of all ROC curves for the ROC movie with at least \code{a} and at most \code{a+b} ROC curves}
 
-\item{output}{name of GIF animation}
-
-\item{clean}{if FALSE png files are not deleted}
-
-\item{convert}{convert command for the function  \link[animation]{im.convert}}
-
-\item{cmd.fun}{a function to invoke OS command in  \link[animation]{im.convert}}
-
-\item{interval}{a postve number to set the time interval of the animation (unit in second) in \link[animation]{ani.options}}
-
-\item{...}{plotting arguments}
+\item{a}{default is \code{a=400}. Used to select a subset of all ROC curves for the ROC movie with at least \code{a} and at most \code{a+b} ROC curves}
 }
 \value{
-GIF animation
+List
 }
 \description{
-This function computes an animated ROC movie.
+This function computes a List of ROC curves.
 }
 \details{
-The ROC movie can be used to visualize the performance of a real valued foreacsting problem. Therefore, a sequence of png-files is generated and combined into a GIF animation using the external software ImageMagick (\url{https://imagemagick.org/}) and the R package \code{animation}.
+The ROC movie can be used to visualize the performance of a real valued foreacsting problem. Therefore, a sequence of ROC curves is generated which should than be combined into a GIF animation. Each entry of the list consist of two vectors of length 1000 containing the values of farate (1-Specificity) and hitrate (sensitivity) and three values, namely the associated auc value, the weight and the threshold
 }
 \examples{
 \dontrun{
 data(longley)
 response = longley$Employed
 predictor = longley$GNP
-rocm(response, predictor, path="/home")}
+rocm(response, predictor)}
 }

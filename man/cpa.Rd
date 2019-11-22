@@ -19,13 +19,13 @@ cpa(...)
 
 \item{predictor}{a numeric vector of the same length as \code{response}, containing real valued predictions for each observation}
 
-\item{uroc}{an object of class "uroc" contaning the values of the false alarm rate and the hitrate of the uROC curve}
+\item{uroc}{an object of class "uroc" contaning the values of the false alarm rate (1-specificity) and the hitrate (sensitivity) of the UROC curve}
 }
 \value{
 The numeric CPA value
 }
 \description{
-This function computes the coefficient of predictive ability which is equalivalent to the area under the uROC curve. Two syntaxes are possible: one object of class "uroc" or two vectors, the response and the predictor.
+This function computes the coefficient of predictive ability which is equalivalent to the area under the UROC curve. Two syntaxes are possible: one object of class "uroc" or two vectors, the response and the predictor.
 }
 \details{
 This function is called from \code{\link{rocm}} and \code{\link{uroc}}.

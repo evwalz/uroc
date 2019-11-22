@@ -4,21 +4,21 @@
 \alias{uroc}
 \title{Computes a uROC curve}
 \usage{
-uroc(response, predictor, object = FALSE, plot = TRUE, algo = NULL,
-  space.size = NULL)
+uroc(response, predictor, object = FALSE, plot = TRUE,
+  algo = "approx", split = 1)
 }
 \arguments{
 \item{response}{a numeric vector of real valued responses}
 
 \item{predictor}{a numeric vector of the same length than \code{response}, containing real valued predictions for each observation}
 
-\item{object}{if TRUE an object of type uroc is returned containg the false alarm rate and the hitrate of the uROC curve}
+\item{object}{if TRUE an object of type uroc is returned containg the false alarm rate and the hitrate of the UROC curve}
 
 \item{plot}{plot the uROC curve? if \code{FALSE} the curve is not displayed}
 
-\item{algo}{optional argument to select an algorithm for the computation of the uROC curve. See Details.}
+\item{algo}{optional argument to select an algorithm for the computation of the UROC curve. See Details.}
 
-\item{space.size}{optional argument to set the number of x-values for which the corresponding value in the approximation algorithm for the uROC curve is computed. It is the inverse value of the distance between equidistant points within the interval [0,1]}
+\item{split}{a integer value with a default of \code{split = 1}. Computes uroc curve by considering only a subset of all N-1 available ROC curves to reduce computation time. The split parameter defines the distance between a set of equidistant indices which are then used to select particular ROC curves among the N-1.}
 }
 \value{
 If \code{object = TRUE} this function returns a list of class "uroc".
@@ -27,7 +27,7 @@ If \code{object = TRUE} this function returns a list of class "uroc".
 This function builds a uROC curve and returns a "uroc" object, a list of class "uroc".
 }
 \details{
-There are 3 different algorithms available to create a uROC curve. The input argument \code{algo="exact"} computes the exact uROC curve. Using \code{algo="approx1"} or \code{algo="approx2"} generates an approximation to the uROC curve by computing the y-values of the curve only on specific x-values. The x-values are equidistant over the interval [0,1] and the number of x-values used in the computation can be set by \code{space.size}. Calling \code{algo="approx1"} generates an approximation with a correction for ties in the predictor vaiable whereas \code{algo="approx2"} ignores ties in the predictor variable but results in a faster computation. Therefore, it is recommended to either use \code{algo="exact"} or \code{algo="approx2"} if the input vector for \code{predictor} contains a lot of tied values. If the type of algorithm is not specified, the \code{\link{uroc}} function choses one of the three versions based on the input arguments in \code{response} and \code{predictor}.
+There are 2 different algorithms available to create a uROC curve. The default option is  \code{algo="approx"} which generates an approximation to the UROC curve by using linear interpolation of each ROC curve on a set of 1000 äquidistant points in the unit interval. To reduce computation time the paramter \code{split} can be specified. The input argument \code{algo="exact"} computes the exact uROC curve and should only be used on small data.
 }
 \examples{
 data(longley)
