@@ -3,8 +3,8 @@
   #' @details The ROC movie can be used to visualize the performance of a real valued foreacsting problem. Therefore, a sequence of ROC curves is generated which should than be combined into a GIF animation. Each entry of the list consist of two vectors of length 1000 containing the values of farate (1-Specificity) and hitrate (sensitivity) and three values, namely the associated auc value, the weight and the threshold
   #' @param response a numeric vector of real valued responses
   #' @param predictor a numeric vector of the same length than \code{response}, containing real valued predictions for each observation
-  #' @param b default is \code{b=100} Used to select a subset of all ROC curves for the ROC movie with at least \code{a} and at most \code{a+b} ROC curves
   #' @param a default is \code{a=400}. Used to select a subset of all ROC curves for the ROC movie with at least \code{a} and at most \code{a+b} ROC curves
+  #' @param b default is \code{b=100} Used to select a subset of all ROC curves for the ROC movie with at least \code{a} and at most \code{a+b} ROC curves
 
   #' @importFrom stats approxfun
   #'
@@ -20,8 +20,8 @@
 
   rocm <-  function(response,
                     predictor,
-                    b = 100,
-                    a = 400) {
+                    a = 400,
+                    b = 100) {
 
     if (!is.vector(predictor) || !is.vector(response)) {
       stop("Input must be a vector")
@@ -124,7 +124,7 @@
       w <- round(weights_scaled[i],2)
       z <- round(thresholds_split[i],2)
       name <- paste("roc_curve_",i,sep="")
-      roc_single <- list(farate = c(0,InterPoint), hitrate = c(0,hitrate), auc = auc, weights = w, threshold = z)
+      roc_single <- list(farate = c(0,InterPoint), hitrate = c(0,hitrate), auc = auc, weight = w, threshold = z)
       rocm_list[[name]] <- roc_single
     }
     return(rocm_list)
