@@ -5,8 +5,12 @@
   #' @param predictor a numeric vector of the same length than \code{response}, containing real valued predictions for each observation
   #' @param a default is \code{a=400}. Used to select a subset of all ROC curves for the ROC movie with at least \code{a} and at most \code{a+b} ROC curves
   #' @param b default is \code{b=100} Used to select a subset of all ROC curves for the ROC movie with at least \code{a} and at most \code{a+b} ROC curves
-
+  #' @param object if TRUE a list of ROC curves is returned. Default option is \code{object = TRUE}
+  #' @param gif if TRUE a gif animation is created
+  #' @param ... parameters to control behavior of gif animation using the external function ani.option. See  \link{animation} for more information
+  #'
   #' @importFrom stats approxfun
+  #' @importFrom animation ani.options saveGIF
   #'
   #' @return List
   #' @export
@@ -21,7 +25,10 @@
   rocm <-  function(response,
                     predictor,
                     a = 400,
-                    b = 100) {
+                    b = 100,
+                    object = TRUE,
+                    gif = FALSE,
+                    ...) {
 
     if (!is.vector(predictor) || !is.vector(response)) {
       stop("Input must be a vector")
@@ -107,7 +114,7 @@
     w <- round(weights_scaled[1],2)
     z <- round(thresholds_split[1],2)
     rocm_list = list()
-    roc_single <- list(farate = c(0,InterPoint), hitrate = c(0,hitrate), auc = auc, weights = w, threshold = z)
+    roc_single <- list(farate = c(0,InterPoint), hitrate = c(0,hitrate), auc = auc, weight = w, threshold = z)
     rocm_list[[name]] <- roc_single
 
     for (i in 2:length(indxsetC)) {
@@ -127,5 +134,27 @@
       roc_single <- list(farate = c(0,InterPoint), hitrate = c(0,hitrate), auc = auc, weight = w, threshold = z)
       rocm_list[[name]] <- roc_single
     }
-    return(rocm_list)
+
+    if(object == TRUE) {
+      return(rocm_list)
+    }
+
+    if(gif == TRUE) {
+      uroc_object <- uroc(response, predictor, object = TRUE, plot = FALSE)
+      auc <- round(Trapezoidal(uroc_object$Farate, uroc_object$Hitrate), 2)
+      rocm_object[["uroc"]] <- list(farate = uroc_object$Farate, hitrate = uroc_object$Hitrate, auc = auc)
+
+      ani.options(loop = 1, interval = 0.1, ...)
+
+      saveGIF({
+        for(i in 1:length(rocm_object)) {
+          plot(rocm_object[[i]]$farate, rocm_object[[i]]$hitrate, type="l", xlab = "1-Specificity", ylab = "Sensitivity")
+          lines(x = c(0,1), y = c(0,1))
+          if(i < length(rocm_object)) {text(x=0.75, y=0.2, labels = paste("AUC:", rocm_object[[i]]$auc), adj = 0)
+            text(x = 0.0, y = 0.95, labels = paste("z =", rocm_object[[i]]$threshold), adj = 0)
+            text(x = 0.2, y = 0.95, labels = paste("w =", rocm_object[[i]]$weight), adj = 0)}
+          if(i == length(rocm_object)) {text(x = 0.75, y = 0.2, labels = paste("CPA:", rocm_object[[i]]$auc), adj = 0)
+            text(x = 0, y = 0.95, labels = "UROC curve", adj = 0)}
+       }})
+    }
   }
