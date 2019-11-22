@@ -1,4 +1,4 @@
-# This function computes the uROC curve as an weighted average over the ROC curves from the associated rocm
+# This function computes the UROC curve as an weighted average over the ROC curves from the associated rocm
 
 compute_uroc_exact <- function(response, predictor, n, N) {
 

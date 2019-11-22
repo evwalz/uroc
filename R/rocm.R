@@ -141,7 +141,7 @@ rocm <-  function(response,
   # create png of uROC curve
   name <- rename_figure(length(indxsetC)+1)
   uroc_curve <- uroc(response, predictor, plot = FALSE, object = TRUE)
-  uFar <- uroc_curve$Far
+  uFar <- uroc_curve$Farate
   uHitrate <- uroc_curve$Hitrate
   cpa_value <- Trapezoidal(uFar, uHitrate)
   png(filename = paste(path, "/", name, sep=""))
@@ -153,7 +153,7 @@ rocm <-  function(response,
 
   # create GIF animation
   animation::im.convert(paste(path, "/", "*.png", sep=""), output = paste(path, "/", output,sep = ""), convert = convert,
-             cmd.fun = cmd.fun, extra.opts = "",clean = clean)
+                        cmd.fun = cmd.fun, extra.opts = "",clean = clean)
 
 }
 
