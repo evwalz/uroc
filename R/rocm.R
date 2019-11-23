@@ -13,7 +13,7 @@
   #' @importFrom animation ani.options saveGIF
   #' @importFrom graphics plot
   #'
-  #' @return if \code{object = TRUE}, this function retunrs a list of ROC curves
+  #' @return if \code{object = TRUE}, this function returns a list of ROC curves
   #' @export
   #'
   #' @examples
