@@ -25,8 +25,8 @@
 
   rocm <-  function(response,
                     predictor,
-                    a = 400,
-                    b = 100,
+                    a = NULL,
+                    b = NULL,
                     object = TRUE,
                     gif = FALSE,
                     ...) {
@@ -66,19 +66,28 @@
       stop("response must have more than one level")
     }
 
-    # a > 2, b > 0 and a < N-1 and b < N-1 and a, b integers
-    if( a < 2 || a > N-1 || round(a)!=a) {
+    if (is.null(a)) {
+      a = N
+    }
+
+    if (is.null(b)) {
+      b = 1
+    }
+
+    if (a < 2 || a > N || round(a)!=a) {
       stop("invalid value for a")
     }
 
-    if( b <= 0 || b > N-1 || round(b)!=b) {
+    if (b <= 0 || b > n || round(b)!=b) {
       stop("invalid value for b")
     }
 
     # find set C of ROC curves
+
+    # falls NULL then b = 1 and a = N
     class_length <- Encoding$lengths[-1]
-    s <- ceiling((N-1)/(a-1))
-    indx_setCa <- seq(1,N,s)
+    s <- ceiling((N - 1) / (a - 1))
+    indx_setCa <- seq(1, (1 + (a - 1) * s), s)
     indx_setCb <- which(class_length>n/b)
     indxsetC <- sort(unique(c(indx_setCa, indx_setCb)))
 
