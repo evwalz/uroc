@@ -47,6 +47,14 @@
       stop("missing values in the data")
     }
 
+    if (!is.logical(object)) {
+      stop("invalid input for object")
+    }
+
+    if (!is.logical(gif)) {
+      stop("invalid input for object")
+    }
+
     n <- length(response)
 
     if (n != length(predictor)) {

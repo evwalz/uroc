@@ -60,7 +60,15 @@ uroc <- function(response,
 
   split <- floor(split)
   if (split > N || split < 0) {
-    stop("Invalid value for split")
+    stop("invalid value for split")
+  }
+
+  if (!is.logical(object)) {
+    stop("invalid input for object")
+  }
+
+  if (!is.logical(plot)) {
+    stop("invalid input for object")
   }
 
   response_order <- order(response, decreasing=FALSE)
