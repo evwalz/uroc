@@ -66,9 +66,18 @@
       stop("response must have more than one level")
     }
 
+    # a > 2, b > 0 and a < N-1 and b < N-1 and a, b integers
+    if( a < 2 || a > N-1 || round(a)!=a) {
+      stop("invalid value for a")
+    }
+
+    if( b <= 0 || b > N-1 || round(b)!=b) {
+      stop("invalid value for b")
+    }
+
     # find set C of ROC curves
     class_length <- Encoding$lengths[-1]
-    s <- ceiling(N/a)
+    s <- ceiling((N-1)/(a-1))
     indx_setCa <- seq(1,N,s)
     indx_setCb <- which(class_length>n/b)
     indxsetC <- sort(unique(c(indx_setCa, indx_setCb)))
