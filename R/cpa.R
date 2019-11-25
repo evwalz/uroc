@@ -1,15 +1,15 @@
-#' @title Computes coefficient of predictive ability (CPA)
+#' @title Computes coefficient of predictive ability (CPA).
 #' @description This function computes the coefficient of predictive ability which is equalivalent to the area under the UROC curve. Two syntaxes are possible: one object of class "uroc" or two vectors, the response and the predictor.
 #' @aliases cpa.default cpa.uroc
-#' @param response a numeric vector of real valued responses
-#' @param predictor a numeric vector of the same length as \code{response}, containing real valued predictions for each observation
-#' @param uroc an object of class "uroc" contaning the values of the false alarm rate (1-specificity) and the hitrate (sensitivity) of the UROC curve
+#' @param response a numeric vector of real valued responses.
+#' @param predictor a numeric vector of the same length as \code{response}, containing real valued predictions for each observation.
+#' @param uroc an object of class "uroc" contaning the values of the false alarm rate (1-specificity) and the hitrate (sensitivity) of the UROC curve.
 #' @param ... ignored
-#' @details The CPA is an asymmetric measure that is linearly related to the correlation between the classes of the response variable and the ranks of the predictor
+#' @details The CPA is an asymmetric measure that is linearly related to the correlation between the classes of the response variable and the ranks of the predictor.
 #'
 #' @importFrom stats cov
 #'
-#' @return The numeric CPA value
+#' @return The numeric CPA value.
 #' @rdname cpa
 #' @export
 #'
@@ -80,5 +80,3 @@ cpa.uroc <- function(uroc, ...) {
 
   return(cpa)
 }
-
-
