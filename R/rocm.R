@@ -98,7 +98,7 @@
 
     # falls NULL then b = 1 and a = N
     class_length <- Encoding$lengths[-1]
-    s <- ceiling((N - 1) / (a - 1))
+    s <- floor((N - 1) / (a - 1))
     indx_setCa <- seq(1, (1 + (a - 1) * s), s)
     indx_setCb <- which(class_length>n/b)
     indxsetC <- sort(unique(c(indx_setCa, indx_setCb)))
