@@ -7,6 +7,7 @@
   #' @param b selects a subset of all ROC curves for the ROC movie with at least \code{a} and at most \code{a+b} ROC curves (default \code{b=100})
   #' @param object if TRUE a list of ROC curves is returned (default \code{object = TRUE})
   #' @param gif if TRUE a gif animation is created
+  #' @param movie.name name of the movie (with extension)
   #' @param ... parameters to control the behavior of the GIF animation using the external function ani.option from \link{animation}.
   #'
   #' @importFrom stats approx
@@ -29,6 +30,7 @@
                     b = NULL,
                     object = TRUE,
                     gif = FALSE,
+                    movie.name = "animation.gif",
                     ...) {
 
     if (!is.vector(predictor) || !is.vector(response)) {
@@ -76,7 +78,7 @@
 
     if (is.null(a) && N <= 400) {
       a = N
-    } elseif (is.null(a) && N > 400) {
+    } else if (is.null(a) && N > 400) {
       a = 400
     }
 
@@ -183,6 +185,6 @@
             text(x = 0.2, y = 0.95, labels = paste("w =", rocm_list[[i]]$weight), adj = 0)}
           if(i == length(rocm_list)) {text(x = 0.75, y = 0.2, labels = paste("CPA:", rocm_list[[i]]$auc), adj = 0)
             text(x = 0, y = 0.95, labels = "UROC curve", adj = 0)}
-       }})
+       }}, movie.name = movie.name)
     }
   }
