@@ -74,8 +74,10 @@
       stop("response must have more than one level")
     }
 
-    if (is.null(a)) {
+    if (is.null(a) && N <= 400) {
       a = N
+    } elseif (is.null(a) && N > 400) {
+      a = 400
     }
 
     if (is.null(b)) {

@@ -4,8 +4,14 @@
 \alias{uroc}
 \title{Computes a UROC curve}
 \usage{
-uroc(response, predictor, object = FALSE, plot = TRUE,
-  algo = "approx", split = 1)
+uroc(
+  response,
+  predictor,
+  object = FALSE,
+  plot = TRUE,
+  algo = "approx",
+  split = 1
+)
 }
 \arguments{
 \item{response}{a numeric vector of real valued responses}
@@ -27,7 +33,7 @@ If \code{object = TRUE} this function returns a list of class "uroc".
 This function builds a UROC curve and returns a "uroc" object, a list of class "uroc".
 }
 \details{
-There are 2 different algorithms available to create a uROC curve. The default option is  \code{algo="approx"} which generates an approximation to the UROC curve by using linear interpolation of each ROC curve. To reduce computation time the paramter \code{split} can be specified to select a subset of ROC curves in the computation. The input argument \code{algo="exact"} computes the exact UROC curve and should only be used on small data.
+There are 2 different algorithms available to create a UROC curve. The default option is  \code{algo="approx"} which generates an approximation to the UROC curve by using linear interpolation of each ROC curve. To reduce computation time the paramter \code{split} can be specified to select a subset of ROC curves in the computation. The input argument \code{algo="exact"} computes the exact UROC curve and should only be used on small data.
 }
 \examples{
 data(longley)

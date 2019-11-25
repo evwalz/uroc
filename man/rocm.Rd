@@ -4,8 +4,7 @@
 \alias{rocm}
 \title{Builds the ROC movie (ROCM) an animated sequence of ROC curves.}
 \usage{
-rocm(response, predictor, a = 400, b = 100, object = TRUE,
-  gif = FALSE, ...)
+rocm(response, predictor, a = NULL, b = NULL, object = TRUE, gif = FALSE, ...)
 }
 \arguments{
 \item{response}{a numeric vector of real valued responses}
@@ -23,7 +22,7 @@ rocm(response, predictor, a = 400, b = 100, object = TRUE,
 \item{...}{parameters to control the behavior of the GIF animation using the external function ani.option from \link{animation}.}
 }
 \value{
-if \code{object = TRUE}, this function retunrs a list of ROC curves
+if \code{object = TRUE}, this function returns a list of ROC curves
 }
 \description{
 This function computes the sequence of ROC curves which form the ROC Movie and produces a GIF animated ROCM
