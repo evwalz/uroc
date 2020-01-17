@@ -2,25 +2,19 @@
 % Please edit documentation in R/uroc.R
 \name{uroc}
 \alias{uroc}
-\title{Computes a UROC curve}
+\title{Computes a UROC curve.}
 \usage{
-uroc(
-  response,
-  predictor,
-  object = FALSE,
-  plot = TRUE,
-  algo = "approx",
-  split = 1
-)
+uroc(response, predictor, object = FALSE, plot = TRUE,
+  algo = "approx", split = 1)
 }
 \arguments{
-\item{response}{a numeric vector of real valued responses}
+\item{response}{a numeric vector of real valued responses.}
 
-\item{predictor}{a numeric vector of the same length than \code{response}, containing real valued predictions for each observation}
+\item{predictor}{a numeric vector of the same length than \code{response}, containing real valued predictions for each observation.}
 
-\item{object}{if TRUE an object of type uroc is returned containg the false alarm rate and the hitrate of the UROC curve}
+\item{object}{if TRUE an object of type uroc is returned containg the false alarm rate and the hitrate of the UROC curve.}
 
-\item{plot}{plot the UROC curve? if \code{FALSE} the curve is not displayed}
+\item{plot}{plot the UROC curve? if \code{FALSE} the curve is not displayed.}
 
 \item{algo}{optional argument to select an algorithm for the computation of the UROC curve. See Details.}
 

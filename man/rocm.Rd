@@ -4,31 +4,34 @@
 \alias{rocm}
 \title{Builds the ROC movie (ROCM) an animated sequence of ROC curves.}
 \usage{
-rocm(response, predictor, a = NULL, b = NULL, object = TRUE, gif = FALSE, ...)
+rocm(response, predictor, a = NULL, b = NULL, object = TRUE,
+  gif = FALSE, movie.name = "animation.gif", ...)
 }
 \arguments{
-\item{response}{a numeric vector of real valued responses}
+\item{response}{a numeric vector of real valued responses.}
 
-\item{predictor}{a numeric vector of the same length than \code{response}, containing real valued predictions for each observation}
+\item{predictor}{a numeric vector of the same length than \code{response}, containing real valued predictions for each observation.}
 
-\item{a}{selects a subset of all ROC curves for the ROC movie with at least \code{a} and at most \code{a+b} ROC curves (default \code{a=400})}
+\item{a}{selects a subset of all ROC curves for the ROC movie with at least \code{a} and at most \code{a+b} ROC curves.}
 
-\item{b}{selects a subset of all ROC curves for the ROC movie with at least \code{a} and at most \code{a+b} ROC curves (default \code{b=100})}
+\item{b}{selects a subset of all ROC curves for the ROC movie with at least \code{a} and at most \code{a+b} ROC curves.}
 
-\item{object}{if TRUE a list of ROC curves is returned (default \code{object = TRUE})}
+\item{object}{if TRUE a list of ROC curves is returned (default \code{object = TRUE}).}
 
-\item{gif}{if TRUE a gif animation is created}
+\item{gif}{if TRUE a gif animation is created.}
+
+\item{movie.name}{name of the movie (with extension).}
 
 \item{...}{parameters to control the behavior of the GIF animation using the external function ani.option from \link{animation}.}
 }
 \value{
-if \code{object = TRUE}, this function returns a list of ROC curves
+if \code{object = TRUE}, this function returns a list of ROC curves.
 }
 \description{
-This function computes the sequence of ROC curves which form the ROC Movie and produces a GIF animated ROCM
+This function computes the sequence of ROC curves which form the ROC Movie and produces a GIF animated ROCM.
 }
 \details{
-The ROC movie can be used to visualize the performance of a real valued foreacsting problem. Therefore, a sequence of ROC curves is generated which can than be combined into a GIF animation. Each entry of the list consist of two vectors of length 1000 containing the values of farate (1-Specificity) and hitrate (sensitivity) and three values, namely the associated auc value, the weight and the threshold
+The ROC movie can be used to visualize the performance of a real valued foreacsting problem. Therefore, a sequence of ROC curves is generated which can than be combined into a GIF animation. Each entry of the list consist of two vectors of length 1000 containing the values of farate (1-Specificity) and hitrate (sensitivity) and three values, namely the associated auc value, the weight and the threshold.
 }
 \examples{
 \dontrun{
