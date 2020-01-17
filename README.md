@@ -41,3 +41,4 @@ uroc(response, predictor)
 
 References/Contact
 ------------------
+https://arxiv.org/abs/1912.01956
