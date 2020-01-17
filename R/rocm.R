@@ -28,8 +28,8 @@
                     predictor,
                     a = NULL,
                     b = NULL,
-                    object = TRUE,
-                    gif = FALSE,
+                    object = FALSE,
+                    gif = TRUE,
                     movie.name = "animation.gif",
                     ...) {
 
@@ -67,7 +67,7 @@
     response <- response[response_order]
     predictor <- predictor[response_order]
 
-
+    # Lenght encoding
     Encoding = rle(response)
     thresholds <- Encoding$values[-1]
     N <- length(thresholds)
@@ -95,27 +95,30 @@
     }
 
     # find set C of ROC curves
-
-    # falls NULL then b = 1 and a = N
     class_length <- Encoding$lengths[-1]
     s <- floor((N - 1) / (a - 1))
     indx_setCa <- seq(1, (1 + (a - 1) * s), s)
     indx_setCb <- which(class_length>n/b)
     indxsetC <- sort(unique(c(indx_setCa, indx_setCb)))
 
+    # get number of zeros and ones for each binary problem included in the set C
     ncontrols <- (which(duplicated(response) == FALSE) - 1)[-1]
     ncontrols_split <- ncontrols[indxsetC]
     thresholds_split <- thresholds[indxsetC]
     group_length <- c(ncontrols_split) - c(0, ncontrols_split[-length(ncontrols_split)])
     groups <- rep(seq(1, length(group_length),1), group_length)
 
+    # compute weight for each cnsidered binary problem
     weights <- (ncontrols_split * (n - ncontrols_split))
     weights_scaled <- weights/ max(ncontrols*(n-ncontrols))
-    # indices to define which transformed problems are used in the computation of uroc
 
+    # compute classes of predictor
     Ranking_predictor_1 <- rank(predictor, ties.method = "first")
     Classes_predictor <- cumsum(duplicated(sort(predictor))==FALSE)[Ranking_predictor_1]
 
+    # create list where each list element corresponds to a binary problem.
+    # Each list element contains only classes of predictor that correspond to a respond value of zero
+    # In each list element the class values are sorted and the difference between neighbouring values is computed
     Split_classes_predictor <- split(Classes_predictor[1:length(groups)], groups)
     Split_classes_predictor_ordered <- lapply(Split_classes_predictor, function(x){c(0, sort(x))})
     rm(Split_classes_predictor)
@@ -127,17 +130,18 @@
     order_predictor <- order(predictor, decreasing = TRUE)
     first_threshold <- thresholds_split[1]
     response_binary <- response[order_predictor] >= first_threshold
-
     dups <- rev(duplicated(rev(predictor[order_predictor])))
     tp <- c(0, cumsum(response_binary == 1)[!dups])
     fp <- c(0, cumsum(response_binary == 0)[!dups])
     truepositive <- rev(tp)
     falsepositive <- rev(fp)
+    # roc curve is only computed on "space_size=1000" equidistant values in the interval [0,1]
     space_size <- 1000
     InterPoint <- seq(0, 1, (1 / space_size))
     first_roc_curve <- approx(x = fp/ncontrols_split[1], y = tp/(n-ncontrols[1]), xout = InterPoint, method = "linear", ties = "ordered")
     hitrate <- first_roc_curve$y
-    # include first plot
+
+    # save plot as first element in a list of roc curves. Include information such as auc, weight and threshold.
     sum_tp_fp <- falsepositive + truepositive
     name <- paste("roc_curve_",1,sep="")
     auc <- round(Trapezoidal(InterPoint, hitrate),2)
@@ -147,6 +151,7 @@
     roc_single <- list(farate = c(0,InterPoint), hitrate = c(0,hitrate), auc = auc, weight = w, threshold = z)
     rocm_list[[name]] <- roc_single
 
+    # Use for-loop to compute the rest of the ROC curves.
     for (i in 2:length(indxsetC)) {
 
       m <- length(Split_classes_predictor_ordered_diff[[i]])
@@ -165,10 +170,12 @@
       rocm_list[[name]] <- roc_single
     }
 
+    # If gif is not working the list of ROC curves can be returned
     if(object == TRUE) {
       return(rocm_list)
     }
 
+    # Directly oputputs a gif animation by transforming the list of ROC curves into a sequence of plots.
     if(gif == TRUE) {
       uroc_object <- uroc(response, predictor, object = TRUE, plot = FALSE)
       auc <- round(Trapezoidal(uroc_object$Farate, uroc_object$Hitrate), 2)

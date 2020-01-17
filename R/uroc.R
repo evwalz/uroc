@@ -75,13 +75,13 @@ uroc <- function(response,
   response <- response[response_order]
   predictor <- predictor[response_order]
 
-
+  # compute exact uroc curve or an approximation.
+  # additional option to speed up computation is parameter split (consideres only a subset of ROC curves to compute uroc curve)
   if(algo=='exact'){
     uroc_object <- compute_uroc_exact(response, predictor,n,N)
   } else {
     uroc_object <- compute_uroc_approx(response, predictor,n,N, split)
   }
-
 
   Farate <- uroc_object$Farate
   Hitrate <- uroc_object$Hitrate
