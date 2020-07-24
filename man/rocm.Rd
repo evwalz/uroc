@@ -4,8 +4,16 @@
 \alias{rocm}
 \title{Builds the ROC movie (ROCM) an animated sequence of ROC curves.}
 \usage{
-rocm(response, predictor, a = NULL, b = NULL, object = TRUE,
-  gif = FALSE, movie.name = "animation.gif", ...)
+rocm(
+  response,
+  predictor,
+  a = NULL,
+  b = NULL,
+  object = FALSE,
+  gif = TRUE,
+  movie.name = "animation.gif",
+  ...
+)
 }
 \arguments{
 \item{response}{a numeric vector of real valued responses.}

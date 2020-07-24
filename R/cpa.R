@@ -74,9 +74,9 @@ cpa.default <- function(response, predictor, ...) {
 
 cpa.uroc <- function(uroc, ...) {
 
-  Farate <- uroc$Farate
-  Hitrate <- uroc$Hitrate
-  cpa <- Trapezoidal(Farate, Hitrate)
+  Farate <- uroc$farate
+  Hitrate <- uroc$hitrate
+  cpa <- trap(Farate, Hitrate)
 
   return(cpa)
 }

@@ -137,18 +137,18 @@
     falsepositive <- rev(fp)
     # roc curve is only computed on "space_size=1000" equidistant values in the interval [0,1]
     space_size <- 1000
-    InterPoint <- seq(0, 1, (1 / space_size))
-    first_roc_curve <- approx(x = fp/ncontrols_split[1], y = tp/(n-ncontrols[1]), xout = InterPoint, method = "linear", ties = "ordered")
+    interpoint <- seq(0, 1, (1 / space_size))
+    first_roc_curve <- approx(x = fp/ncontrols_split[1], y = tp/(n-ncontrols[1]), xout = interpoint, method = "linear", ties = "ordered")
     hitrate <- first_roc_curve$y
 
     # save plot as first element in a list of roc curves. Include information such as auc, weight and threshold.
     sum_tp_fp <- falsepositive + truepositive
     name <- paste("roc_curve_",1,sep="")
-    auc <- round(Trapezoidal(InterPoint, hitrate),2)
+    auc <- round(trap(interpoint, hitrate),2)
     w <- round(weights_scaled[1],2)
     z <- round(thresholds_split[1],2)
     rocm_list = list()
-    roc_single <- list(farate = c(0,InterPoint), hitrate = c(0,hitrate), auc = auc, weight = w, threshold = z)
+    roc_single <- list(farate = c(0,interpoint), hitrate = c(0,hitrate), auc = auc, weight = w, threshold = z)
     rocm_list[[name]] <- roc_single
 
     # Use for-loop to compute the rest of the ROC curves.
@@ -159,14 +159,14 @@
       sequence_to_change <- length(sum_indicator)
       truepositive[1:sequence_to_change] <- truepositive[1:sequence_to_change] - sum_indicator
       farate <- (sum_tp_fp - truepositive) / ncontrols_split[i]
-      roc_approx <- approx(x = rev(farate), y = rev(truepositive) / (n-ncontrols_split[i]), xout = InterPoint, method = "linear", ties = "ordered")
+      roc_approx <- approx(x = rev(farate), y = rev(truepositive) / (n-ncontrols_split[i]), xout = interpoint, method = "linear", ties = "ordered")
       hitrate <- roc_approx$y
 
-      auc <- round(Trapezoidal(InterPoint, hitrate),2)
+      auc <- round(trap(interpoint, hitrate),2)
       w <- round(weights_scaled[i],2)
       z <- round(thresholds_split[i],2)
       name <- paste("roc_curve_",i,sep="")
-      roc_single <- list(farate = c(0,InterPoint), hitrate = c(0,hitrate), auc = auc, weight = w, threshold = z)
+      roc_single <- list(farate = c(0,interpoint), hitrate = c(0,hitrate), auc = auc, weight = w, threshold = z)
       rocm_list[[name]] <- roc_single
     }
 
@@ -177,9 +177,9 @@
 
     # Directly oputputs a gif animation by transforming the list of ROC curves into a sequence of plots.
     if(gif == TRUE) {
-      uroc_object <- uroc(response, predictor, object = TRUE, plot = FALSE)
-      auc <- round(Trapezoidal(uroc_object$Farate, uroc_object$Hitrate), 2)
-      rocm_list[["uroc"]] <- list(farate = uroc_object$Farate, hitrate = uroc_object$Hitrate, auc = auc)
+      uroc_object <- uroc(response, predictor)
+      auc <- round(trap(uroc_object$farate, uroc_object$hitrate), 2)
+      rocm_list[["uroc"]] <- list(farate = uroc_object$farate, hitrate = uroc_object$hitrate, auc = auc)
 
       ani.options(loop = 1, interval = 0.1, ...)
 
