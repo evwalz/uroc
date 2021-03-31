@@ -54,13 +54,13 @@ cpa.default <- function(response, predictor, ...) {
   }
 
   # order decreasing by response
-  response_order <- order(response, decreasing = FALSE)
-  response_sort <- response[response_order]
-  predictor_sort <- predictor[response_order]
+  # response_order <- order(response, decreasing = FALSE)
+  # response_sort <- response[response_order]
+  # predictor_sort <- predictor[response_order]
 
   # compute ranks and classes
-  predictor_Rank <- rank(x = predictor_sort, ties.method = "average")
-  response_Rank <- rank(x = response_sort, ties.method = "average")
+  predictor_Rank <- rank(x = predictor, ties.method = "average")
+  response_Rank <- rank(x = response, ties.method = "average")
   response_Class <- cumsum(!duplicated(response_Rank))
 
   # compute cpa using definition of class correlation coefficient
