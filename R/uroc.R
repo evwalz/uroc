@@ -38,6 +38,10 @@ uroc <- function(response, predictor, approx = FALSE, split = 1) {
     stop("missing values in the data")
   }
 
+  response_order <- order(response, decreasing=FALSE)
+  response <- response[response_order]
+  predictor <- predictor[response_order]
+  
   thresholds <- unique(response)
   N <- length(unique(response))
   n <- length(response)
@@ -54,10 +58,6 @@ uroc <- function(response, predictor, approx = FALSE, split = 1) {
   if (n != length(predictor)) {
     stop("response and predictor should have the same length")
   }
-
-  response_order <- order(response, decreasing=FALSE)
-  response <- response[response_order]
-  predictor <- predictor[response_order]
 
   if (N == 2) {
     uroc_object <- uroc_exact(response, predictor, thresholds, n, N)
