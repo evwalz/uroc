@@ -41,7 +41,7 @@ uroc <- function(response, predictor, approx = FALSE, split = 1) {
   response_order <- order(response, decreasing=FALSE)
   response <- response[response_order]
   predictor <- predictor[response_order]
-  
+
   thresholds <- unique(response)
   N <- length(unique(response))
   n <- length(response)
@@ -81,8 +81,6 @@ uroc <- function(response, predictor, approx = FALSE, split = 1) {
   splitted_classes = aggregate(data.frame(classes = class_predictor), by = data.frame(thresholds = cumsum(thresh_boolean)), FUN = identity)$classes
 
   # compute first roc
-  cat("Estimating uroc...\n")
-  pb <- utils::txtProgressBar(style = 1)
 
   response_binary <- rep(1, n)
   response_binary[1:ncontrols[1]] <- 0
@@ -98,25 +96,9 @@ uroc <- function(response, predictor, approx = FALSE, split = 1) {
 
   tpr <- c(0, cumsum(response_binary)[dups])
   fpr <- c(0, cumsum(response_binary == 0)[dups])
-  tpr_weight <- rev(tpr)
-  fpr_weight <- rev(fpr)
   interpoint <- seq(0, 1, (1 / 1000))
 
-
-  tpr_interpolated <- approx(x = fpr/(ncontrols[1]), y = tpr, xout = interpoint, method = "linear", ties = "ordered")$y * ncontrols[1]
-  sum_tpr_fpr <- tpr_weight + fpr_weight
-
-  for (i in 2:(N-1)) {
-    utils::setTxtProgressBar(pb, i/(N-2))
-    diff_split_element <- diff(sort(c(0, splitted_classes[[i]])))
-    m = length(diff_split_element)
-    sum_indicator <- rep(c(m:1), diff_split_element)
-    seq_change <- length(sum_indicator)
-    tpr_weight[1:seq_change] <- tpr_weight[1:seq_change] - sum_indicator
-    fpr <- (sum_tpr_fpr - tpr_weight) / ncontrols[i]
-    tpr_interpolated <- approx(x = rev(fpr), y = rev(tpr_weight), xout = interpoint, method = "linear", ties = "ordered")$y * ncontrols[i] + tpr_interpolated
-  }
-  close(pb)
+  tpr_interpolated <- tpr_vec(splitted_classes, fpr, tpr, interpoint, ncontrols, N)
 
   tpr_interpolated_weight <- tpr_interpolated / weight_s
 
